@@ -104,7 +104,7 @@ int main (int argc, char** argv)
     // The code visualizes the BVH bounding boxes using 3D points.
     // The resulting mesh can be loaded with, for example, Meshlab or UMVE.
     // Warning: On bigger models, the resulting mesh will be huge.
-#if 0
+#if 1
     // Visualize BVH.
     std::cout << "Visualizing BVH..." << std::endl;
     Mesh meshBVH;
@@ -112,7 +112,7 @@ int main (int argc, char** argv)
     std::cout << "  Vertices: " << meshBVH.vertices.size() << std::endl;
     std::cout << "  Triangles: " << (meshBVH.faces.size() / 3) << std::endl;
     std::cout << "Saving BVH visualization..." << std::endl;
-    save_off_mesh(meshBVH, "/tmp/mesh_bvh.off");
+    save_off_mesh(meshBVH, "./mesh_bvh.off");
 #endif
 
     return 0;

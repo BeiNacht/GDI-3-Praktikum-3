@@ -11,8 +11,6 @@
 
 BVHNode::BVHNode()
 {
-	this->left = new BVHNode();
-	this->right = new BVHNode();
 }
 
 BVHNode::~BVHNode()
@@ -22,18 +20,38 @@ BVHNode::~BVHNode()
 
 void BVHNode::insert(Mesh const& mesh, std::vector<unsigned int>* faceIDs)
 {
+	Vec3f min;
+	Vec3f max;
+	Vec3f tempMin;
+	Vec3f tempMax;
     for (unsigned int i = 0; i < 10; i++)
     {
     	triangles.push_back(Triangle(&mesh, i));
+    	tempMin = triangles.back().getAABBMin();
+    	tempMax = triangles.back().getAABBMax();
+
+    	if (i == 0)
+    	{
+    		min = tempMin;
+    		max = tempMax;
+    	}
+    	else
+    	{
+			if (tempMin.length() < min.length())
+				min = tempMin;
+			if (tempMax.length() > max.length())
+				max = tempMax;
+    	}
     }
 
-    this->left->insert(mesh, faceIDs);
-    this->right->insert(mesh, faceIDs);
-    std::cout << "  Dreiecks: " << triangles.size() << std::endl;
+    this->aabb = AABB(min, max);
+    //this->left->insert(mesh, faceIDs);
+    //this->right->insert(mesh, faceIDs);
+    //std::cout << "  Dreiecks: " << triangles.size() << std::endl;
 }
 
 bool BVHNode::intersect(Ray const& ray, Intersection* intersection) const
 {
     // TODO
-    return true;
+    return false;
 }
