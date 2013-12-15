@@ -11,6 +11,8 @@
 
 BVHNode::BVHNode()
 {
+	this->left = NULL;
+	this->right = NULL;
 }
 
 BVHNode::~BVHNode()
@@ -20,34 +22,28 @@ BVHNode::~BVHNode()
 
 void BVHNode::insert(Mesh const& mesh, std::vector<unsigned int>* faceIDs)
 {
-	Vec3f min;
-	Vec3f max;
-	Vec3f tempMin;
-	Vec3f tempMax;
-    for (unsigned int i = 0; i < 10; i++)
-    {
-    	triangles.push_back(Triangle(&mesh, i));
-    	tempMin = triangles.back().getAABBMin();
-    	tempMax = triangles.back().getAABBMax();
+	triangles.push_back(Triangle(&mesh, 0));
+	Vec3f min = triangles.back().getAABBMin();
+	Vec3f max = triangles.back().getAABBMax();
 
-    	if (i == 0)
-    	{
-    		min = tempMin;
-    		max = tempMax;
-    	}
-    	else
-    	{
-			if (tempMin.length() < min.length())
-				min = tempMin;
-			if (tempMax.length() > max.length())
-				max = tempMax;
-    	}
-    }
+	for (unsigned int var = 1; var < faceIDs->size(); ++var)
+	{
+		triangles.push_back(Triangle(&mesh, var));
+
+		for (int i = 0; i<3; i++)
+		{
+			if (min[i]>triangles.back().getAABBMin()[i])
+			{
+				min[i] = triangles.back().getAABBMin()[i];
+			}
+			if (max[i]<triangles.back().getAABBMax()[i])
+			{
+				max[i] = triangles.back().getAABBMax()[i];
+			}
+		}
+	}
 
     this->aabb = AABB(min, max);
-    //this->left->insert(mesh, faceIDs);
-    //this->right->insert(mesh, faceIDs);
-    //std::cout << "  Dreiecks: " << triangles.size() << std::endl;
 }
 
 bool BVHNode::intersect(Ray const& ray, Intersection* intersection) const

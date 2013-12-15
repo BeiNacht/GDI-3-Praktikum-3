@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <stdexcept>
 #include <iostream>
-
+#include <string>
 #include "vec3.h"
 #include "mesh.h"
 

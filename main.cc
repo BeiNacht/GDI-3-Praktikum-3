@@ -112,7 +112,7 @@ int main (int argc, char** argv)
     std::cout << "  Vertices: " << meshBVH.vertices.size() << std::endl;
     std::cout << "  Triangles: " << (meshBVH.faces.size() / 3) << std::endl;
     std::cout << "Saving BVH visualization..." << std::endl;
-    save_off_mesh(meshBVH, "./mesh_bvh.off");
+    save_off_mesh(meshBVH, "mesh_bvh.off");
 #endif
 
     return 0;
