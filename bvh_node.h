@@ -41,7 +41,8 @@ public:
     BVHNode();
     ~BVHNode();
 
-    void insert(Mesh const& mesh, std::vector<unsigned int>* faceIDs);
+	void insert(Mesh const& mesh, std::vector<unsigned int>* faceIDs);
+	void insert(std::vector<Triangle>* triangles);
     bool intersect(Ray const& ray, Intersection* intersection) const;
 
 public:
