@@ -2,6 +2,7 @@
 #include <stdexcept>
 //test
 #include <iostream>
+using namespace std;
 #include <fstream>
 #include <stdlib.h>
 
@@ -80,7 +81,8 @@ void BVHNode::insert(std::vector<Triangle>* triangles)
 
 	triangles->pop_back();
 
-	for (unsigned int var = 2; var < triangles->size(); ++var)
+
+	while(triangles->size() >0)
 	{
 		this->triangles.push_back(triangles->back());
 		triangles->pop_back();
@@ -97,6 +99,7 @@ void BVHNode::insert(std::vector<Triangle>* triangles)
 
 	if (this->triangles.size() <= MAX_LEAF_TRIANGLES)
 		return;
+
 
 	std::vector<Triangle> left;
 	std::vector<Triangle> right;
@@ -117,6 +120,7 @@ void BVHNode::insert(std::vector<Triangle>* triangles)
 		this->triangles.pop_back();
 	}
 
+
 	this->left = new BVHNode();
 	this->left->insert(&left);
 
@@ -136,4 +140,3 @@ bool BVHNode::intersect(Ray const& ray, Intersection* intersection) const
 			return left->intersect(ray, intersection) || right->intersect(ray, intersection);
 	}
     return false;
-}
