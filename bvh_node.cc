@@ -130,15 +130,21 @@ void BVHNode::insert(std::vector<Triangle>* triangles)
 
 bool BVHNode::intersect(Ray const& ray, Intersection* intersection) const
 {
-	if (this->aabb.intersect(ray))
-	{
-		if (left == NULL && right == NULL)
-			for (unsigned int var = 1; var < triangles.size(); ++var)
+	bool hitl,hitr=0;
+	if (this->aabb.intersect(ray)){
+		if (left == NULL && right == NULL){
+			for (unsigned int var = 1; var < triangles.size(); ++var){
 				if (triangles.at(var).intersect(ray, intersection))
 					return true;
-		else
-			return left->intersect(ray, intersection) || right->intersect(ray, intersection);
+			}
+
+		}
+		else{
+			hitl=left->intersect(ray, intersection);
+			hitr=right->intersect(ray, intersection);
+			return hitl||hitr;
+		}
+
 	}
     return false;
 }
-
