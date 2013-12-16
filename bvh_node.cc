@@ -140,3 +140,5 @@ bool BVHNode::intersect(Ray const& ray, Intersection* intersection) const
 			return left->intersect(ray, intersection) || right->intersect(ray, intersection);
 	}
     return false;
+}
+
