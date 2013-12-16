@@ -93,6 +93,11 @@ void BVHNode::insert(std::vector<Triangle>* triangles)
 		}
 	}
 
+	this->aabb = AABB(min, max);
+
+	if (this->triangles.size() <= MAX_LEAF_TRIANGLES)
+		return;
+
 	std::vector<Triangle> left;
 	std::vector<Triangle> right;
 
@@ -112,23 +117,21 @@ void BVHNode::insert(std::vector<Triangle>* triangles)
 		this->triangles.pop_back();
 	}
 
-	this->aabb = AABB(min, max);
+	this->left = new BVHNode();
+	this->left->insert(&left);
 
-	if (left.size() > MAX_LEAF_TRIANGLES)
-	{
-		this->left = new BVHNode();
-		this->left->insert(&left);
-	}
-
-	if (right.size() > MAX_LEAF_TRIANGLES)
-	{
-		this->right = new BVHNode();
-		this->right->insert(&right);
-	}
+	this->right = new BVHNode();
+	this->right->insert(&right);
 }
 
 bool BVHNode::intersect(Ray const& ray, Intersection* intersection) const
 {
-    // TODO
+	if (this->aabb.intersect(ray))
+	{
+		if (left == NULL && right == NULL)
+		{
+
+		}
+	}
     return false;
 }
