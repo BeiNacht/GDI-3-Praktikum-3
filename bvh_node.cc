@@ -75,6 +75,9 @@ void BVHNode::insert(Mesh const& mesh, std::vector<unsigned int>* faceIDs)
 
 void BVHNode::insert(std::vector<Triangle>* triangles)
 {
+	if (triangles->size() == 0)
+		return;
+
 	this->triangles.push_back(triangles->back());
 	Vec3f min = this->triangles.back().getAABBMin();
 	Vec3f max = this->triangles.back().getAABBMax();
@@ -82,7 +85,7 @@ void BVHNode::insert(std::vector<Triangle>* triangles)
 	triangles->pop_back();
 
 
-	while(triangles->size() >0)
+	while(triangles->size() > 0)
 	{
 		this->triangles.push_back(triangles->back());
 		triangles->pop_back();
@@ -99,7 +102,6 @@ void BVHNode::insert(std::vector<Triangle>* triangles)
 
 	if (this->triangles.size() <= MAX_LEAF_TRIANGLES)
 		return;
-
 
 	std::vector<Triangle> left;
 	std::vector<Triangle> right;
@@ -120,6 +122,17 @@ void BVHNode::insert(std::vector<Triangle>* triangles)
 		this->triangles.pop_back();
 	}
 
+	if (left.size() == 0)
+	{
+		left.push_back(right.back());
+		right.pop_back();
+	}
+	
+	if (right.size() == 0)
+	{
+		right.push_back(left.back());
+		left.pop_back();
+	}
 
 	this->left = new BVHNode();
 	this->left->insert(&left);
@@ -130,19 +143,29 @@ void BVHNode::insert(std::vector<Triangle>* triangles)
 
 bool BVHNode::intersect(Ray const& ray, Intersection* intersection) const
 {
-	bool hitl,hitr=0;
-	if (this->aabb.intersect(ray)){
-		if (left == NULL && right == NULL){
-			for (unsigned int var = 1; var < triangles.size(); ++var){
+	bool hitl = false;
+	bool hitr = false;
+
+	if (this->aabb.intersect(ray))
+	{
+		if (left == NULL && right == NULL)
+		{
+			for (unsigned int var = 0; var < triangles.size(); ++var)
+			{
 				if (triangles.at(var).intersect(ray, intersection))
 					return true;
 			}
 
 		}
-		else{
+		else
+		{
 			hitl=left->intersect(ray, intersection);
 			hitr=right->intersect(ray, intersection);
-			return hitl||hitr;
+			if (hitl)
+				return true;
+
+			if (hitr)
+				return true;
 		}
 
 	}
