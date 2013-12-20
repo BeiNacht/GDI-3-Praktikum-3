@@ -1,13 +1,14 @@
 #include <limits>
 #include <stdexcept>
-//test
+
 #include <iostream>
-using namespace std;
 #include <fstream>
 #include <stdlib.h>
 
 #include "visual.h"
 #include "bvh_node.h"
+
+using namespace std;
 
 BVHNode::BVHNode()
 {
@@ -75,9 +76,6 @@ void BVHNode::insert(Mesh const& mesh, std::vector<unsigned int>* faceIDs)
 
 void BVHNode::insert(std::vector<Triangle>* triangles)
 {
-	if (triangles->size() == 0)
-		return;
-
 	this->triangles.push_back(triangles->back());
 	Vec3f min = this->triangles.back().getAABBMin();
 	Vec3f max = this->triangles.back().getAABBMax();
@@ -151,21 +149,15 @@ bool BVHNode::intersect(Ray const& ray, Intersection* intersection) const
 		if (left == NULL && right == NULL)
 		{
 			for (unsigned int var = 0; var < triangles.size(); ++var)
-			{
 				if (triangles.at(var).intersect(ray, intersection))
 					return true;
-			}
-
 		}
 		else
 		{
-			hitl=left->intersect(ray, intersection);
-			hitr=right->intersect(ray, intersection);
-			if (hitl)
-				return true;
+			hitl = left->intersect(ray, intersection);
+			hitr = right->intersect(ray, intersection);
 
-			if (hitr)
-				return true;
+			return hitl || hitr;
 		}
 
 	}
